@@ -1,0 +1,28 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: create ec2 infrastructure
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - ./vars/main.yml
+  roles:
+    - hdp-instances
+
+- name: bootstrap hosts for the hadoop installation
+  hosts: hdp
+  gather_facts: yes
+  vars_files:
+    - ./vars/main.yml
+  roles:
+    - hadoop-bootstrap
+    - ambari-agent
+
+- name: install
+  hosts: utility
+  gather_facts: yes
+  vars_files:
+    - ./vars/main.yml
+  roles:
+    - ambari-server
+    - hdp
+
