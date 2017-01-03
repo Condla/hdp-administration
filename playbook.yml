@@ -11,18 +11,28 @@
 - name: bootstrap hosts for the hadoop installation
   hosts: hdp
   gather_facts: yes
+  become: yes
   vars_files:
     - ./vars/main.yml
   roles:
     - hadoop-bootstrap
-    - ambari-agent
 
-- name: install
-  hosts: utility
+- name: install ambari agents
+  hosts: hdp
   gather_facts: yes
+  become: yes
   vars_files:
     - ./vars/main.yml
   roles:
-    - ambari-server
-    - hdp
+    - hdp-ambari-agents
+
+- name: install ambari server and hdp
+  hosts: utility
+  gather_facts: yes
+  become: yes
+  vars_files:
+    - ./vars/main.yml
+  roles:
+    - hdp-mysql-server
+    - hdp-ambari-server
 

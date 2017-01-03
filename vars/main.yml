@@ -3,7 +3,7 @@ utility_instance_type: t2.nano
 master1_instance_type: t2.nano
 master2_instance_type: t2.nano
 worker_instance_type: t2.nano
-worker_count: 3
+worker_count: 1
 region: eu-west-1
 key_name: hdp
 security_group: default
