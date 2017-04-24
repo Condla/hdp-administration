@@ -1,6 +1,6 @@
 # HDP Playbook
 
-This is an Ansible playbook that does (or will do) the following things:
+This is an Ansible playbook that does the following things:
 
 * Create a number of EC2 instances based on the ```hdp-instances``` role.
 * Bootstrap these nodes for a Hadoop installation based on the ```hadoop-bootstrap``` role.
@@ -8,27 +8,29 @@ This is an Ansible playbook that does (or will do) the following things:
 * Installs Ambari and HDP based on the ```ambari-agents``` and ```ambari-server``` 
   roles using Ambari blueprints.
 
+## Prerequisites
 
-All of these roles mentioned need to be available before the playbook can be
-executed successfully.
+These are the minimum number of roles, that need to be available before the playbook can be
+executed successfully in order to install Hortonworks Hadoop.
+
+You can use the ```get_roles.sh``` script to download the roles from github
+directly into the currently configured roles directory.
+
 
 ## Details and Considerations
 
-* For a HDP 2.5.x installation, Ambari 2.4.x is used.
+* For a HDP 2.6.x installation, Ambari 2.5.x is used.
 
 
-## Prerequisites
+## Execution
 
-* If you are using the ```hdp-instances``` role, then you need to set the AWS
-  credentials as environment variables
-  ```
-  export AWS_REGION="your-default-aws-region"
-  export AWS_ACCESS_KEY_ID="your-key-id-here"
-  export AWS_SECRET_ACCESS_KEY="your-key-here"
-  ```
-* If you don't have the roles in place, execute: ```./get_roles.sh``` to clone
-  the roles from git. TODO: upload roles to ansible-galaxy and obtain roles
-  from there :-)
+Do the following to execute the playbook. Don't forget to specify the private
+key to your AWS nodes, if you didn't configure you ssh-agent to serve the key.
 
+```./playbook.yml --private-key=~/aws.pem ```
+
+## Troubleshooting
+
+* For troubleshooting refer to the README.md of the roles that are used.
 
 

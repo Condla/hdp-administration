@@ -1,18 +1,15 @@
 [utility:children]
 tag_type_utility
 
-[master1:children]
-tag_type_master1
+[master:children]
+tag_type_master
 
-[master2:children]
-tag_type_master2
 
 [worker:children]
 tag_type_worker
 
 [tag_type_utility]
-[tag_type_master1]
-[tag_type_master2]
+[tag_type_master]
 [tag_type_worker]
 
 [test:children]
