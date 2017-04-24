@@ -1,10 +1,10 @@
 image: ami-7abd0209
-utility_instance_type: t2.nano
-master1_instance_type: t2.nano
-master2_instance_type: t2.nano
-worker_instance_type: t2.nano
-worker_count: 1
+utility_instance_type: m4.xlarge 
+master1_instance_type: m4.xlarge 
+master2_instance_type: m4.xlarge 
+worker_instance_type: m4.xlarge
+worker_count: 3
 region: eu-west-1
-key_name: hdp
-security_group: default
+key_name: bigdataworkshop
+security_group: bigdatatraining
 launch_second_master: False
