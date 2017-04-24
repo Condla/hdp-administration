@@ -19,11 +19,16 @@ executed successfully.
 
 ## Prerequisites
 
-* If you are using the hdp-instances role, then you need to set the AWS
+* If you are using the ```hdp-instances``` role, then you need to set the AWS
   credentials as environment variables
   ```
   export AWS_REGION="your-default-aws-region"
   export AWS_ACCESS_KEY_ID="your-key-id-here"
   export AWS_SECRET_ACCESS_KEY="your-key-here"
   ```
+* If you don't have the roles in place, execute: ```./get_roles.sh``` to clone
+  the roles from git. TODO: upload roles to ansible-galaxy and obtain roles
+  from there :-)
+
+
 
