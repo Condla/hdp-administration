@@ -4,20 +4,26 @@ tag_type_utility
 [master:children]
 tag_type_master
 
-
 [worker:children]
 tag_type_worker
 
 [tag_type_utility]
+condla-hdp0.field.hortonworks.com
+
 [tag_type_master]
+condla-hdp[1:2].field.hortonworks.com
+
 [tag_type_worker]
+condla-hdp[3:7].field.hortonworks.com
 
 [test:children]
 tag_env_test
 
 [tag_env_test]
+condla-hdp[0:7].field.hortonworks.com
 
 [hdp:children]
 tag_purpose_hdp
 
 [tag_purpose_hdp]
+condla-hdp[0:7].field.hortonworks.com
