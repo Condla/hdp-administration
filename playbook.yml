@@ -36,3 +36,12 @@
     - hdp-mysql-server
     - hdp-ambari-server
 
+- name: enable sssd
+  hosts: hdp
+  gather_facts: yes
+  become: yes
+  vars_files:
+    - ./vars/security.yml
+    - ./hiddenvars/security.yml
+  roles:
+    - hdp-security
