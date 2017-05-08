@@ -1,0 +1,12 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: install ambari server and hdp
+  hosts: hdp
+  gather_facts: yes
+  become: yes
+  vars_files:
+    - ./vars/users.yml
+  roles:
+    - hdp-users
+
