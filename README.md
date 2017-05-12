@@ -16,6 +16,14 @@ executed successfully in order to install Hortonworks Hadoop.
 You can use the ```get_roles.sh``` script to download the roles from github
 directly into the currently configured roles directory.
 
+At the moment passwords are stored unencrypted but are not version controlled
+in the directory ```hiddenvars```. Make sure to add a file "security.yml" into
+this directory containing values for these two variables
+
+
+sssd_user_password: <password of sssd user account>
+ad_test_user: <arbitrary user present in AD>
+
 
 ## Details and Considerations
 
