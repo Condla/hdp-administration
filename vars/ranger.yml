@@ -1,0 +1,52 @@
+ranger_admin_keystore:
+    path: /etc/ranger/admin/conf/ranger-admin-keystore.jks
+    cert_filename: ranger-admin-trust.cer
+    alias: rangeradmin
+    password: myKeyFilePassword
+ranger_admin_truststore:
+    path: /etc/ranger/admin/conf/ranger-admin-keystore.jks
+    password: myKeyFilePassword
+
+ranger_services:
+    hadoop:
+        alias: hadoopTrust
+        password: hadoopTrustPassword
+        keystore_path:  /usr/hdp/current/hadoop-client/conf/ranger-plugin-keystore.jks
+        truststore_path: /usr/hdp/current/hadoop-client/conf/ranger-plugin-truststore.jks
+        cert_filename: hadoop-trust.cer
+    atlas:
+        alias: atlasTrust
+        password: atlasTrustPassword
+        keystore_path:  /usr/hdp/current/atlas-server/conf/ranger-plugin-keystore.jks
+        truststore_path: /usr/hdp/current/atlas-server/conf/ranger-plugin-truststore.jks
+        cert_filename: atlas-trust.cer
+    nimbus:
+        alias: nimbusTrust
+        password: nimbusTrustPassword
+        keystore_path: /usr/hdp/current/storm-client/conf/ranger-plugin-keystore.jks
+        truststore_path: /usr/hdp/current/storm-client/conf/ranger-plugin-truststore.jks
+        cert_filename: nimbus-trust.cer
+    knox:
+        alias: knoxTrust
+        password: knoxTrustPassword
+        keystore_path: /usr/hdp/current/knox-server/conf/ranger-plugin-keystore.jks
+        truststore_path: /usr/hdp/current/knox-server/conf/ranger-plugin-truststore.jks
+        cert_filename: knox-trust.cer
+    kafka:
+        alias: kafkaTrust
+        password: kafkaTrustPassword
+        keystore_path: /usr/hdp/current/kafka-broker/config/ranger-plugin-keystore.jks
+        truststore_path: /usr/hdp/current/kafka-broker/config/ranger-plugin-truststore.jks
+        cert_filename: kafka-trust.cer
+    hive:
+        alias: hiveTrust
+        password: hiveTrustPassword
+        keystore_path: /usr/hdp/current/hive-server2/conf/ranger-plugin-keystore.jks
+        truststore_path: /etc/hive/conf/conf.server/ranger-plugin-truststore.jks
+        cert_filename: hive-trust.cer
+    hbase:
+        alias: hbaseTrust
+        password: hbaseTrustPassword
+        keystore_path: /usr/hdp/current/hbase-client/conf/ranger-plugin-keystore.jks
+        truststore_path: /usr/hdp/current/hbase-client/conf/ranger-plugin-truststore.jks
+        cert_filename: hbase-trust.cer

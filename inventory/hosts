@@ -7,6 +7,15 @@ tag_type_master
 [worker:children]
 tag_type_worker
 
+[edge:children]
+tag_type_edge
+
+[test:children]
+tag_env_test
+
+[hdp:children]
+tag_purpose_hdp
+
 [tag_type_utility]
 condla-hdp0.field.hortonworks.com
 
@@ -16,14 +25,45 @@ condla-hdp[1:2].field.hortonworks.com
 [tag_type_worker]
 condla-hdp[3:7].field.hortonworks.com
 
-[test:children]
-tag_env_test
+[tag_type_edge]
+condla-hdp0.field.hortonworks.com
 
 [tag_env_test]
 condla-hdp[0:7].field.hortonworks.com
 
-[hdp:children]
-tag_purpose_hdp
-
 [tag_purpose_hdp]
 condla-hdp[0:7].field.hortonworks.com
+
+[regionserver]
+condla-hdp[4:7].field.hortonworks.com
+
+[ranger:children]
+utility
+
+[hadoop:children]
+master
+
+[atlas:children]
+utility
+
+[nimbus:children]
+master
+
+[resource_manager:children]
+master
+
+[knox:children]
+edge
+
+[hive:children]
+master
+
+[hbase:children]
+master
+regionserver
+
+[kafka]
+condla-hdp4.field.hortonworks.com
+condla-hdp5.field.hortonworks.com
+condla-hdp6.field.hortonworks.com
+condla-hdp7.field.hortonworks.com
