@@ -6,307 +6,64 @@
   become: yes
   vars_files:
     - ./vars/ranger.yml
-  tasks:
-
-    - name: install pexpect
-      pip: name=pexpect
-
-    - name: create key on ranger host
-      expect:
-        command: keytool -genkey -keyalg RSA -alias {{ ranger_admin_keystore.alias }} -keystore {{ ranger_admin_keystore.path }} -storepass {{ ranger_admin_keystore.password }} -validity 360 -keysize 2048
-        responses:
-          "(?i)first and last name": "{{ ranger_admin_keystore.alias }}" 
-          "(?i)organizational unit": "PS"
-          "(?i)your organization": "Hortonworks"
-          "(?i)city or locality": "Munich"
-          "(?i)state or province": "Bavaria"
-          "(?i)two-letter country": "de"
-          "(?i)correct?": "yes"
-          "(?i)keystore password": ""
-      register: result
-      failed_when: "result.rc == 1 and not 'already exists' in result.stdout"
-      changed_when: "result.rc == 0"
-
-    - name: set permissions to keystore file
-      file: path={{ ranger_admin_keystore.path }} owner=ranger group=ranger mode=0400
-      
-    - name: export key from keystore to file
-      shell: keytool -export -keystore {{ ranger_admin_keystore.path }} -alias {{ ranger_admin_keystore.alias }} -file /tmp/{{ ranger_admin_keystore.cert_filename }}
-
-    - name: create ssl_certs directory
-      local_action: file path=./ssl_certs state=directory
-      become: no
-
-    - name: fetch file
-      fetch: src=/tmp/{{ ranger_admin_keystore.cert_filename }} dest=./ssl_certs/ flat=yes
-
-    - name: delete file remotely
-      file: path=/tmp/{{ ranger_admin_keystore.cert_filename }} state=absent
-
-    - name: print debug message
-      debug: msg={{ item.key }}
-      with_dict:  "{{ ranger_services }}"
-
-    - name: create trusted file for each service
-      expect:
-        command: keytool -genkey -keyalg RSA -alias {{ item.value.alias }} -keystore {{ ranger_admin_truststore.path }} -storepass {{ ranger_admin_truststore.password }} -validity 360 -keysize 2048
-        responses:
-          "(?i)first and last name": "{{ item.value.alias }}"
-          "(?i)organizational unit": "PS"
-          "(?i)your organization": "Hortonworks"
-          "(?i)city or locality": "Munich"
-          "(?i)state or province": "Bavaria"
-          "(?i)two-letter country": "de"
-          "(?i)correct?": "yes"
-          "(?i)keystore password": ""
-      with_dict: "{{ ranger_services }}"
-      register: result 
-      failed_when: "result.rc == 1 and not 'already exists' in result.stdout"
-      changed_when: "result.rc == 0"
-
-    - name: export keys from truststore to files
-      shell: keytool -export -keystore {{ ranger_admin_truststore.path }} -alias {{ item.value.alias }} -file /tmp/{{ item.value.cert_filename }}
-      with_dict: "{{ ranger_services }}"
-
-    - name: fetch files
-      fetch: src=/tmp/{{ item.value.cert_filename }} dest=./ssl_certs/ flat=yes
-      with_dict: "{{ ranger_services }}"
-
-    - name: delete remote files
-      file: path=/tmp/{{ item.value.cert_filename }} state=absent
-      with_dict: "{{ ranger_services }}"
+  roles:
+    - hdp-ranger-create-certs
 
 - name: deploy ranger certs for hadoop
   hosts: hadoop
-  gather_facts: yes
   become: yes
   vars_files:
     - ./vars/ranger.yml
-  vars:
-    service: hadoop
-  tasks:
-
-    - name: debug it
-      debug: msg={{ ranger_services[service] }}
-
-    - name: delete certfiles
-      file: path={{ ranger_services[service].keystore_path }} state=absent
-    - file: path={{ ranger_services[service].truststore_path }} state=absent
-
-    - name: deploy key for service
-      copy: src=./ssl_certs/{{ ranger_services[service].cert_filename }} dest=/tmp/
-
-    - name: deploy admin trust file
-      copy: src=./ssl_certs/{{ ranger_admin_keystore.cert_filename }} dest=/tmp/
-
-    - name: import ranger trust to truststore
-      shell: keytool -import -file /tmp/{{ ranger_admin_keystore.cert_filename }} -alias "{{ ranger_admin_keystore.alias }}" -keystore "{{ ranger_services[service].truststore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-
-    - name: import key to keystore
-      shell: keytool -import -file /tmp/{{ ranger_services[service].cert_filename }} -alias "{{ ranger_services[service].alias }}" -keystore "{{ ranger_services[service].keystore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-
-    - name: delete cert files
-      file: path=./tmp/{{ ranger_admin_keystore.cert_filename }} state=absent
-    - file: path=./tmp/{{ ranger_services[service].cert_filename }} state=absent
+  roles:
+    - { role: hdp-ranger-deploy-certs, service: hadoop }
 
 - name: deploy ranger certs for atlas
   hosts: atlas
-  gather_facts: yes
   become: yes
   vars_files:
     - ./vars/ranger.yml
-  vars:
-    service: atlas
-  tasks:
-
-    - name: debug it
-      debug: msg={{ ranger_services[service] }}
-      
-    - name: delete certfiles
-      file: path={{ ranger_services[service].keystore_path }} state=absent
-    - file: path={{ ranger_services[service].truststore_path }} state=absent
-
-    - name: deploy key for service
-      copy: src=./ssl_certs/{{ ranger_services[service].cert_filename }} dest=/tmp/
-
-    - name: deploy admin trust file
-      copy: src=./ssl_certs/{{ ranger_admin_keystore.cert_filename }} dest=/tmp/
-
-    - name: import ranger trust to truststore
-      shell: keytool -import -file /tmp/{{ ranger_admin_keystore.cert_filename }} -alias "{{ ranger_admin_keystore.alias }}" -keystore "{{ ranger_services[service].truststore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-
-    - name: import key to keystore
-      shell: keytool -import -file /tmp/{{ ranger_services[service].cert_filename }} -alias "{{ ranger_services[service].alias }}" -keystore "{{ ranger_services[service].keystore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-      
-    - name: delete cert files
-      file: path=./tmp/{{ ranger_admin_keystore.cert_filename }} state=absent
-    - file: path=./tmp/{{ ranger_services[service].cert_filename }} state=absent
-
+  roles:
+    - { role: hdp-ranger-deploy-certs, service: atlas }
+    
+    
 - name: deploy ranger certs for nimbus
   hosts: nimbus
-  gather_facts: yes
   become: yes
   vars_files:
     - ./vars/ranger.yml
-  vars:
-    service: nimbus
-  tasks:
+  roles:
+    - { role: hdp-ranger-deploy-certs, service: storm }
 
-    - name: debug it
-      debug: msg={{ ranger_services[service] }}
-      
-    - name: delete certfiles
-      file: path={{ ranger_services[service].keystore_path }} state=absent
-    - file: path={{ ranger_services[service].truststore_path }} state=absent
 
-    - name: deploy key for service
-      copy: src=./ssl_certs/{{ ranger_services[service].cert_filename }} dest=/tmp/
-
-    - name: deploy admin trust file
-      copy: src=./ssl_certs/{{ ranger_admin_keystore.cert_filename }} dest=/tmp/
-
-    - name: import ranger trust to truststore
-      shell: keytool -import -file /tmp/{{ ranger_admin_keystore.cert_filename }} -alias "{{ ranger_admin_keystore.alias }}" -keystore "{{ ranger_services[service].truststore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-
-    - name: import key to keystore
-      shell: keytool -import -file /tmp/{{ ranger_services[service].cert_filename }} -alias "{{ ranger_services[service].alias }}" -keystore "{{ ranger_services[service].keystore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-      
-    - name: delete cert files
-      file: path=./tmp/{{ ranger_admin_keystore.cert_filename }} state=absent
-    - file: path=./tmp/{{ ranger_services[service].cert_filename }} state=absent
-      
 - name: deploy ranger certs for knox
   hosts: knox
-  gather_facts: yes
   become: yes
   vars_files:
     - ./vars/ranger.yml
-  vars:
-    service: knox
-  tasks:
+  roles:
+    - { role: hdp-ranger-deploy-certs, service: knox }
 
-    - name: debug it
-      debug: msg={{ ranger_services[service] }}
-
-      
-    - name: delete certfiles
-      file: path={{ ranger_services[service].keystore_path }} state=absent
-    - file: path={{ ranger_services[service].truststore_path }} state=absent
-
-    - name: deploy key for service
-      copy: src=./ssl_certs/{{ ranger_services[service].cert_filename }} dest=/tmp/
-
-    - name: deploy admin trust file
-      copy: src=./ssl_certs/{{ ranger_admin_keystore.cert_filename }} dest=/tmp/
-
-    - name: import ranger trust to truststore
-      shell: keytool -import -file /tmp/{{ ranger_admin_keystore.cert_filename }} -alias "{{ ranger_admin_keystore.alias }}" -keystore "{{ ranger_services[service].truststore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-
-    - name: import key to keystore
-      shell: keytool -import -file /tmp/{{ ranger_services[service].cert_filename }} -alias "{{ ranger_services[service].alias }}" -keystore "{{ ranger_services[service].keystore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-      
-    - name: delete cert files
-      file: path=./tmp/{{ ranger_admin_keystore.cert_filename }} state=absent
-    - file: path=./tmp/{{ ranger_services[service].cert_filename }} state=absent
 
 - name: deploy ranger certs for kafka
   hosts: kafka
-  gather_facts: yes
   become: yes
   vars_files:
     - ./vars/ranger.yml
-  vars:
-    service: kafka
-  tasks:
+  roles:
+    - { role: hdp-ranger-deploy-certs, service: kafka }
 
-    - name: debug it
-      debug: msg={{ ranger_services[service] }}
-
-      
-    - name: delete certfiles
-      file: path={{ ranger_services[service].keystore_path }} state=absent
-    - file: path={{ ranger_services[service].truststore_path }} state=absent
-
-    - name: deploy key for service
-      copy: src=./ssl_certs/{{ ranger_services[service].cert_filename }} dest=/tmp/
-
-    - name: deploy admin trust file
-      copy: src=./ssl_certs/{{ ranger_admin_keystore.cert_filename }} dest=/tmp/
-
-    - name: import ranger trust to truststore
-      shell: keytool -import -file /tmp/{{ ranger_admin_keystore.cert_filename }} -alias "{{ ranger_admin_keystore.alias }}" -keystore "{{ ranger_services[service].truststore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-
-    - name: import key to keystore
-      shell: keytool -import -file /tmp/{{ ranger_services[service].cert_filename }} -alias "{{ ranger_services[service].alias }}" -keystore "{{ ranger_services[service].keystore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-      
-    - name: delete cert files
-      file: path=./tmp/{{ ranger_admin_keystore.cert_filename }} state=absent
-    - file: path=./tmp/{{ ranger_services[service].cert_filename }} state=absent
-    
 - name: deploy ranger certs for hive
-  hosts: hive
-  gather_facts: yes
+  hosts: hiveserver
   become: yes
   vars_files:
     - ./vars/ranger.yml
-  vars:
-    service: hive
-  tasks:
-
-    - name: debug it hive
-      debug: msg={{ ranger_services[service] }}
-
-      
-    - name: delete certfiles
-      file: path={{ ranger_services[service].keystore_path }} state=absent
-    - file: path={{ ranger_services[service].truststore_path }} state=absent
-
-    - name: deploy key for service
-      copy: src=./ssl_certs/{{ ranger_services[service].cert_filename }} dest=/tmp/
-
-    - name: deploy admin trust file
-      copy: src=./ssl_certs/{{ ranger_admin_keystore.cert_filename }} dest=/tmp/
-
-    - name: import ranger trust to truststore
-      shell: keytool -import -file /tmp/{{ ranger_admin_keystore.cert_filename }} -alias "{{ ranger_admin_keystore.alias }}" -keystore "{{ ranger_services[service].truststore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-
-    - name: import key to keystore
-      shell: keytool -import -file /tmp/{{ ranger_services[service].cert_filename }} -alias "{{ ranger_services[service].alias }}" -keystore "{{ ranger_services[service].keystore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-      
-    - name: delete cert files
-      file: path=./tmp/{{ ranger_admin_keystore.cert_filename }} state=absent
-    - file: path=./tmp/{{ ranger_services[service].cert_filename }} state=absent
+  roles:
+    - { role: hdp-ranger-deploy-certs, service: hive }
 
 - name: deploy ranger certs for hbase
   hosts: hbase
-  gather_facts: yes
   become: yes
   vars_files:
     - ./vars/ranger.yml
-  vars:
-    service: hbase
-  tasks:
-
-    - name: debug hbase
-      debug: msg={{ ranger_services[service] }}
-
-      
-    - name: delete certfiles
-      file: path={{ ranger_services[service].keystore_path }} state=absent
-    - file: path={{ ranger_services[service].truststore_path }} state=absent
-
-    - name: deploy key for service
-      copy: src=./ssl_certs/{{ ranger_services[service].cert_filename }} dest=/tmp/
-
-    - name: deploy admin trust file
-      copy: src=./ssl_certs/{{ ranger_admin_keystore.cert_filename }} dest=/tmp/
-
-    - name: import ranger trust to truststore
-      shell: keytool -import -file /tmp/{{ ranger_admin_keystore.cert_filename }} -alias "{{ ranger_admin_keystore.alias }}" -keystore "{{ ranger_services[service].truststore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-
-    - name: import key to keystore
-      shell: keytool -import -file /tmp/{{ ranger_services[service].cert_filename }} -alias "{{ ranger_services[service].alias }}" -keystore "{{ ranger_services[service].keystore_path }}" -storepass "{{ ranger_services[service].password }}" -noprompt
-      
-    - name: delete cert files
-      file: path=./tmp/{{ ranger_admin_keystore.cert_filename }} state=absent
-    - file: path=./tmp/{{ ranger_services[service].cert_filename }} state=absent
+  roles:
+    - { role: hdp-ranger-deploy-certs, service: hbase }

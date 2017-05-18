@@ -55,7 +55,7 @@ master
 [knox:children]
 edge
 
-[hive:children]
+[hiveserver:children]
 master
 
 [hbase:children]

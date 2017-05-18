@@ -14,39 +14,60 @@ ranger_services:
         keystore_path:  /usr/hdp/current/hadoop-client/conf/ranger-plugin-keystore.jks
         truststore_path: /usr/hdp/current/hadoop-client/conf/ranger-plugin-truststore.jks
         cert_filename: hadoop-trust.cer
+        keystore_owner: hdfs
+        keystore_group: hadoop
+        keystore_mode: "0440"
     atlas:
         alias: atlasTrust
         password: atlasTrustPassword
         keystore_path:  /usr/hdp/current/atlas-server/conf/ranger-plugin-keystore.jks
         truststore_path: /usr/hdp/current/atlas-server/conf/ranger-plugin-truststore.jks
         cert_filename: atlas-trust.cer
-    nimbus:
+        keystore_owner: atlas
+        keystore_group: hadoop
+        keystore_mode: "0400"
+    storm:
         alias: nimbusTrust
         password: nimbusTrustPassword
         keystore_path: /usr/hdp/current/storm-client/conf/ranger-plugin-keystore.jks
         truststore_path: /usr/hdp/current/storm-client/conf/ranger-plugin-truststore.jks
         cert_filename: nimbus-trust.cer
+        keystore_owner: storm
+        keystore_group: hadoop
+        keystore_mode: "0400"
     knox:
         alias: knoxTrust
         password: knoxTrustPassword
         keystore_path: /usr/hdp/current/knox-server/conf/ranger-plugin-keystore.jks
         truststore_path: /usr/hdp/current/knox-server/conf/ranger-plugin-truststore.jks
         cert_filename: knox-trust.cer
+        keystore_owner: knox
+        keystore_group: hadoop
+        keystore_mode: "0400"
     kafka:
         alias: kafkaTrust
         password: kafkaTrustPassword
         keystore_path: /usr/hdp/current/kafka-broker/config/ranger-plugin-keystore.jks
         truststore_path: /usr/hdp/current/kafka-broker/config/ranger-plugin-truststore.jks
         cert_filename: kafka-trust.cer
+        keystore_owner: kafka
+        keystore_group: hadoop
+        keystore_mode: "0400"
     hive:
         alias: hiveTrust
         password: hiveTrustPassword
         keystore_path: /usr/hdp/current/hive-server2/conf/ranger-plugin-keystore.jks
         truststore_path: /etc/hive/conf/conf.server/ranger-plugin-truststore.jks
         cert_filename: hive-trust.cer
+        keystore_owner: hive
+        keystore_group: hadoop
+        keystore_mode: "0400"
     hbase:
         alias: hbaseTrust
         password: hbaseTrustPassword
         keystore_path: /usr/hdp/current/hbase-client/conf/ranger-plugin-keystore.jks
         truststore_path: /usr/hdp/current/hbase-client/conf/ranger-plugin-truststore.jks
         cert_filename: hbase-trust.cer
+        keystore_owner: hbase
+        keystore_group: hadoop
+        keystore_mode: "0400"
