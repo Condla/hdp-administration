@@ -31,6 +31,7 @@
   gather_facts: yes
   become: yes
   vars_files:
+    - ./vars/mysql.yml
     - ./vars/main.yml
   roles:
     - hdp-mysql-server
