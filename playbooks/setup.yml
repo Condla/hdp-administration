@@ -1,13 +1,5 @@
 #!/usr/bin/env ansible-playbook
 ---
-#- name: create ec2 infrastructure
-#  hosts: localhost
-#  gather_facts: no
-#  vars_files:
-#    - ./vars/ec2.yml
-#  roles:
-#    - hdp-instances
-
 - name: bootstrap hosts for the hadoop installation
   hosts: hdp
   gather_facts: yes
@@ -25,18 +17,7 @@
     - ./vars/main.yml
   roles:
     - hdp-ambari-agents
-
-- name: install ambari server and hdp
-  hosts: utility
-  gather_facts: yes
-  become: yes
-  vars_files:
-    - ./vars/mysql.yml
-    - ./vars/main.yml
-  roles:
-    - hdp-mysql-server
-    - hdp-ambari-server
-
+    
 - name: enable sssd
   hosts: hdp
   gather_facts: yes
@@ -46,3 +27,21 @@
     - ./hiddenvars/security.yml
   roles:
     - hdp-security
+
+- name: install mysql server
+  hosts: utility
+  gather_facts: yes
+  become: yes
+  vars_files:
+    - ./vars/mysql.yml
+  roles:
+    - hdp-mysql-server
+
+- name: install ambari-server
+  hosts: utility
+  gather_facts: yes
+  become: yes
+  vars_files:
+    - ./vars/main.yml
+  roles:
+    - hdp-mysql-server

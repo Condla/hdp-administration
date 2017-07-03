@@ -1,7 +1,7 @@
 #!/usr/bin/env ansible-playbook
 ---
 
-- name: install ambari server and hdp
+- name: create system users and workspaces
   hosts: hdp
   gather_facts: yes
   become: yes

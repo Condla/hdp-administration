@@ -17,26 +17,18 @@ tag_env_test
 tag_purpose_hdp
 
 [tag_type_utility]
-condla-hdp0.field.hortonworks.com
 
 [tag_type_master]
-condla-hdp1.field.hortonworks.com
-condla-hdp2.field.hortonworks.com
 
 [tag_type_worker]
-condla-hdp[4:7].field.hortonworks.com
 
 [tag_type_edge]
-condla-hdp3.field.hortonworks.com
 
 [tag_env_test]
-condla-hdp[0:7].field.hortonworks.com
 
 [tag_purpose_hdp]
-condla-hdp[0:7].field.hortonworks.com
 
 [regionserver]
-condla-hdp[4:7].field.hortonworks.com
 
 [ranger:children]
 utility
@@ -64,4 +56,3 @@ master
 regionserver
 
 [kafka]
-condla-hdp[4:7].field.hortonworks.com

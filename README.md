@@ -1,6 +1,6 @@
 # HDP Playbook
 
-This is an Ansible playbook that does the following things:
+This is an Ansible repository that provides playbooks to setup and maintain HDP clusters.
 
 * Create a number of EC2 instances based on the ```hdp-instances``` role.
 * Bootstrap these nodes for a Hadoop installation based on the ```hadoop-bootstrap``` role.

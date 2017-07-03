@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: upgrade all yum packages
+  hosts: hdp
+  gather_facts: yes
+  become: yes
+  tasks:
+    - yum: name=* state=latest

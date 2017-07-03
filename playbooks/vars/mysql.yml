@@ -29,5 +29,5 @@ databases:
   - name: rangerkms
     user: rangerkms
     host_all: yes
-    password: ranger
+    password: rangerkms
     priv: rangerkms.*:ALL

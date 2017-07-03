@@ -1,4 +1,4 @@
-export ANSIBLE_ROLES_DIR="./roles"
+export ANSIBLE_ROLES_DIR="./playbooks/roles"
 
 mkdir $ANSIBLE_ROLES_DIR 
 cd $ANSIBLE_ROLES_DIR
