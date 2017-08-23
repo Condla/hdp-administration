@@ -1,0 +1,14 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: upgrade all yum packages
+  hosts: worker
+  gather_facts: yes
+  become: yes
+  tasks:
+    - file:
+        src: /usr/hdp/current/hadoop-client
+        dest: /usr/hdf/3.0.0.0-453/hadoop-client
+        owner: nifi
+        group: nifi
+        state: link 

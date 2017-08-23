@@ -1,0 +1,114 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: install repo
+  hosts: devbox
+  gather_facts: no
+  become: yes
+  tasks:
+
+    - name: remove ambari repo
+      file: name=/etc/yum.repos.d/ambari.repo state=absent
+
+    - name: download ambari repo
+      get_url:
+        url: http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.5.1.0/ambari.repo
+        dest: /etc/yum.repos.d/ambari.repo
+
+    - name: clean repo info
+      command: yum clean all
+
+- name: upgrade server
+  hosts: devbox
+  gather_facts: no
+  become: yes
+  tasks:
+
+    - pause: prompt="Make sure that you stopped ambari-infra and ambari metrics services from Ambari UI"
+
+    - name: stop ambari server
+      service: name=ambari-server state=stopped
+
+    - name: upgrade server librariers
+      #yum: name=ambari-server state=latest
+      command: yum update -y ambari-server
+
+    - name: upgrade database
+      commmand: ambari-server upgrade
+
+- name: upgrade agents
+  hosts: devbox
+  gather_facts: no
+  become: yes
+  tasks:
+
+    - name: stop ambari agents
+      service: name=ambari-agent state=stopped
+
+    - name: upgrade
+      #yum: name=ambari-agent state=latest
+      command: yum update -y ambari-agent
+
+- name: upgrade ambari-infra
+  hosts: devbox
+  gather_facts: no
+  become: yes
+  tasks:
+
+    - name: upgrade ambari-infra
+      #yum: name=ambari-infra-solr-client state=latest
+      command: yum update -y ambari-infr-solr-client
+
+- name: upgrade ambari-metrics
+  hosts: devbox
+  gather_facts: no
+  become: yes
+  tasks:
+
+    - name: upgrade
+      #yum: name={{ item }}
+      command: yum update -y {{ item }}
+      with_items:
+        - ambari-infra-solr
+        - ambari-infra-solr-client
+        - ambari-metrics-monitor
+        - ambari-metrics-hadoop-sink
+        - ambari-metrics-collector
+        - ambari-metrics-grafana
+
+# - name: start server
+#   hosts: devbox
+#   gather_facts: yes
+#   become: yes
+#   tasks:
+#
+#     - name: start ambari server
+#       service: name=ambari-server state=started
+
+- name: start agents
+  hosts: devbox
+  gather_facts: no
+  become: yes
+  tasks:
+
+    - name: start ambari agents
+      service: name=ambari-agent state=started
+
+- name: install HDF 3.0.0
+  hosts: devbox
+  gather_facts: no
+  become: yes
+  tasks:
+
+    # - name: stop ambari-server
+    #   service: name=ambari-server state=stopped
+
+    - name: download ambari-management pack
+      get_url:
+        url: http://public-repo-1.hortonworks.com/HDF/centos7/3.x/updates/3.0.0.0/tars/hdf_ambari_mp/hdf-ambari-mpack-3.0.0.0-453.tar.gz
+        dest: /tmp/hdf-ambari-mpack.tar.gz
+
+    - name: install mpack
+      command: ambari-server install-mpack --mpack=/tmp/hdf-ambari-mpack.tar.gz --verbose
+
+    - name: start ambari-server
+      service: name=ambari-server state=started

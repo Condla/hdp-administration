@@ -1,0 +1,12 @@
+---
+- name: adapt sudoers file
+  hosts: hdp
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: commend out requiretty part
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: '^Defaults    requiretty'
+        line: '#Defaults    requiretty'
+        state: present
