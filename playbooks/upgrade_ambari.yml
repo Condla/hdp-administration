@@ -1,7 +1,7 @@
 #!/usr/bin/env ansible-playbook
 ---
 - name: install repo
-  hosts: devbox
+  hosts: hdp
   gather_facts: no
   become: yes
   tasks:
@@ -18,7 +18,7 @@
       command: yum clean all
 
 - name: upgrade server
-  hosts: devbox
+  hosts: ambari
   gather_facts: no
   become: yes
   tasks:
@@ -36,7 +36,7 @@
       commmand: ambari-server upgrade
 
 - name: upgrade agents
-  hosts: devbox
+  hosts: hdp
   gather_facts: no
   become: yes
   tasks:
@@ -49,7 +49,7 @@
       command: yum update -y ambari-agent
 
 - name: upgrade ambari-infra
-  hosts: devbox
+  hosts: ambari-infra
   gather_facts: no
   become: yes
   tasks:
@@ -59,7 +59,7 @@
       command: yum update -y ambari-infr-solr-client
 
 - name: upgrade ambari-metrics
-  hosts: devbox
+  hosts: ambari-metrics
   gather_facts: no
   become: yes
   tasks:
@@ -85,7 +85,7 @@
 #       service: name=ambari-server state=started
 
 - name: start agents
-  hosts: devbox
+  hosts: hdp
   gather_facts: no
   become: yes
   tasks:
@@ -94,7 +94,7 @@
       service: name=ambari-agent state=started
 
 - name: install HDF 3.0.0
-  hosts: devbox
+  hosts: ambari
   gather_facts: no
   become: yes
   tasks:
