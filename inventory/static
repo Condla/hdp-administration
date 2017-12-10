@@ -2,17 +2,17 @@
 condla0.field.hortonworks.com
 
 [master]
+condla0.field.hortonworks.com
 condla1.field.hortonworks.com
-condla2.field.hortonworks.com
 
 [worker]
-condla[3:5].field.hortonworks.com
+condla[2:4].field.hortonworks.com
 
 [streaming]
-condla[6:7].field.hortonworks.com
+condla[2:4].field.hortonworks.com
 
 [test]
-condla[0:7].field.hortonworks.com
+condla[0:4].field.hortonworks.com
 
 [hdp:children]
 utility
@@ -21,7 +21,7 @@ worker
 streaming
 
 [regionserver]
-condla[3:5].field.hortonworks.com
+condla[2:4].field.hortonworks.com
 
 [ranger:children]
 utility
