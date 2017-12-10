@@ -1,9 +1,0 @@
-#!/usr/bin/env ansible-playbook
----
-- name: create ec2 infrastructure
-  hosts: localhost
-  gather_facts: no
-  vars_files:
-    - ./vars/ec2.yml
-  roles:
-    - hdp-instances

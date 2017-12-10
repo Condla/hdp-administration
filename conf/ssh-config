@@ -1,0 +1,16 @@
+# Hortonworks OpenStack Cloud Section
+Host *.field.hortonworks.com
+    IdentityFile ~/.ssh/field.pem
+    CheckHostIP=no
+    StrictHostKeyChecking=no
+    User centos
+    UserKnownHostsFile=/dev/null
+    ## Automatically restore a connection if reconnected within 5 minutes (in case the VPN drops)
+    TCPKeepAlive no
+    ServerAliveInterval 60
+    ServerAliveCountMax 5
+    ## reuses the ssh connection making things much faster
+    ControlMaster auto
+    ControlPath /tmp/.ssh_%h_%p_%r
+    ControlPersist 600
+# End of Hortonworks OpenStack Cloud Section

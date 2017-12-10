@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ansible-playbook playbooks/setup.yml -i inventory/static
+ansible-playbook playbooks/setup.yml

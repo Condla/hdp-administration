@@ -10,3 +10,5 @@ git clone git@github.com:Condla/hdp-ambari-agents.git
 git clone git@github.com:Condla/hdp-ambari-server.git
 git clone git@github.com:Condla/hdp-security.git
 git clone git@github.com:Condla/hdp-users.git
+
+git clone git@github.com:Condla/ansible-hdp-playbooks.git playbooks
