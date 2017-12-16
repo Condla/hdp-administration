@@ -4,6 +4,10 @@ condla0.field.hortonworks.com
 [master]
 condla0.field.hortonworks.com
 
+[mysql_access:children]
+utility
+master
+
 [worker]
 condla[1:3].field.hortonworks.com
 

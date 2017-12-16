@@ -1,3 +1,4 @@
 ambari_repo_url: http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.5.2.0/ambari.repo
 ambari_agent_url_port: 8440
 ambari_server_hostname: "{{ hostvars[groups['utility'][0]]['ansible_fqdn'] }}"
+java_home: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el7_4.x86_64/jre
